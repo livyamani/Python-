@@ -1,0 +1,133 @@
+from tkinter import *
+from tkinter import font
+import math
+
+# globally declare the expression variable 
+expression = ""
+last_result=""
+
+# Function to update expression in the text entry box 
+def press(num):
+    global expression
+    global last_result
+    if expression == "" and last_result != "":
+        expression = last_result
+    expression = expression + str(num)
+    equation.set(expression)
+
+# Function to evaluate the final expression 
+def equalpress():
+    try:
+        global expression
+        global last_result
+        total = str(eval(expression))
+        equation.set(total)
+        last_result = total  # Store the result for future use
+        expression = ""
+    except:
+        equation.set(" error ")
+        expression = ""
+
+# Function to clear the contents of text entry box 
+def clear():
+    global expression
+    global last_result
+    expression = ""
+    last_result = ""
+    equation.set("")
+# Function to delete the last character in the expression
+def delete_last():
+    global expression
+    expression = expression[:-1]
+    equation.set(expression)
+
+
+# Function to compute the square root
+def square_root():
+    try:
+        global expression
+        global last_result
+        total = str(math.sqrt(float(expression)))
+        equation.set(total)
+        last_result = total  # Store the result for future use
+        expression = ""
+    except:
+        equation.set(" error ")
+        expression = ""
+
+# Functions to handle hover effects for number buttons
+def on_enter(event, btn, original_color):
+    btn['background'] = 'green'
+
+def on_leave(event, btn, original_color):
+    btn['background'] = original_color
+
+# Functions to handle hover effects for other buttons
+def on_enter_other(event, btn, original_color):
+    btn['background'] = 'light green'
+
+def on_leave_other(event, btn, original_color):
+    btn['background'] = original_color
+
+# Driver code 
+if __name__ == "__main__":
+    # create a GUI window 
+    gui = Tk()
+
+    # set the background color of GUI window 
+    gui.configure(background="light blue")
+
+    # set the title of GUI window 
+    gui.title("Simple Calculator")
+
+    # set the configuration of GUI window 
+    gui.geometry("450x350")
+
+    # StringVar() is the variable class 
+    # we create an instance of this class 
+    equation = StringVar()
+
+    # Define a custom font
+    custom_font = font.Font(family='Arial', size=16, weight='bold')
+
+    # create the text entry box for showing the expression 
+    expression_field = Entry(gui, textvariable=equation, font=custom_font, bd=5, relief='sunken')
+    expression_field.grid(columnspan=5, ipadx=90, pady=10)  # Add padding here
+
+    # Helper function to create buttons with hover effects
+    def create_button(text, row, column, command, bg_color='red', fg_color='black', hover_number=False):
+        button = Button(gui, text=text, fg=fg_color, bg=bg_color,
+                        command=command, height=1, width=7, font=custom_font, bd=2, relief='sunken')
+        button.grid(row=row, column=column, padx=5, pady=5)
+        original_color = bg_color
+        if hover_number:
+            button.bind("<Enter>", lambda event, btn=button: on_enter(event, btn, original_color))
+            button.bind("<Leave>", lambda event, btn=button: on_leave(event, btn, original_color))
+        else:
+            button.bind("<Enter>", lambda event, btn=button: on_enter_other(event, btn, original_color))
+            button.bind("<Leave>", lambda event, btn=button: on_leave_other(event, btn, original_color))
+        return button
+
+    # create Buttons and place at a particular location inside the root window 
+    create_button('1', 2, 0, lambda: press(1), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('2', 2, 1, lambda: press(2), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('3', 2, 2, lambda: press(3), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('4', 3, 0, lambda: press(4), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('5', 3, 1, lambda: press(5), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('6', 3, 2, lambda: press(6), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('7', 4, 0, lambda: press(7), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('8', 4, 1, lambda: press(8), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('9', 4, 2, lambda: press(9), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('0', 5, 0, lambda: press(0), bg_color='light yellow', fg_color='black', hover_number=True)
+    create_button('+', 2, 3, lambda: press("+"), bg_color='black', fg_color='white')
+    create_button('-', 3, 3, lambda: press("-"), bg_color='black', fg_color='white')
+    create_button('*', 4, 3, lambda: press("*"), bg_color='black', fg_color='white')
+    create_button('/', 5, 3, lambda: press("/"), bg_color='black', fg_color='white')
+    create_button('=', 5, 2, equalpress, bg_color='black', fg_color='white')
+    create_button('%', 6, 1, lambda: press("%"), bg_color='black', fg_color='white')
+    create_button('C', 6, 0, clear, bg_color='black', fg_color='white')
+    create_button('.', 5, 1, lambda: press('.'), bg_color='black', fg_color='white')
+    create_button('Del', 6, 2, delete_last, bg_color='black', fg_color='white')
+    create_button('√', 6, 3, square_root, bg_color='black', fg_color='white')#square root
+    # start the GUI 
+    gui.mainloop()
